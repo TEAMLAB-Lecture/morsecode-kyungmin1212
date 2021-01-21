@@ -51,7 +51,10 @@ def is_help_command(user_input):
     """
     # ===Modify codes below=============
     # 조건에 따라 변환되어야 할 결과를 result 변수에 할당 또는 필요에 따라 자유로운 수정
-    result = None
+    if user_input.lower()=='h' or user_input.lower()=="help":
+        result=True
+    else:
+        result=False
 
     return result
     # ==================================
@@ -83,10 +86,24 @@ def is_validated_english_sentence(user_input):
     """
     # ===Modify codes below=============
     # 조건에 따라 변환되어야 할 결과를 result 변수에 할당 또는 필요에 따라 자유로운 수정
-    result = None
+    number_list=['1','2','3','4','5','6','7','8','9','0']
+    special_string=['_','@','#','$','%','^','&','*','(',')','-','+','=','[',']','{','}','"',"'",';',':','|','`','~','\\']
+    user_input=user_input.replace('.','')
+    user_input = user_input.replace(',', '')
+    user_input = user_input.replace('!', '')
+    user_input = user_input.replace('?', '')
+    result=True
+    for i in user_input:
+        if i in number_list or i in special_string:
+            result=False
+            break
+    user_input=user_input.strip()
+    if user_input=="":
+        result=False
 
     return result
     # ==================================
+
 
 
 def is_validated_morse_code(user_input):
@@ -114,7 +131,14 @@ def is_validated_morse_code(user_input):
     """
     # ===Modify codes below=============
     # 조건에 따라 변환되어야 할 결과를 result 변수에 할당 또는 필요에 따라 자유로운 수정
-    result = None
+    user_input_list=user_input.split()
+    result=True
+    for i in user_input_list:
+        if i in get_morse_code_dict().values():
+            continue
+        else:
+            result=False
+            break
 
     return result
     # ==================================
@@ -140,10 +164,18 @@ def get_cleaned_english_sentence(raw_english_sentence):
     """
     # ===Modify codes below=============
     # 조건에 따라 변환되어야 할 결과를 result 변수에 할당 또는 필요에 따라 자유로운 수정
-    result = None
+    raw_english_sentence=raw_english_sentence.replace(".","")
+    raw_english_sentence = raw_english_sentence.replace(",", "")
+    raw_english_sentence = raw_english_sentence.replace("!", "")
+    raw_english_sentence = raw_english_sentence.replace("?", "")
+    raw_english_sentence=raw_english_sentence.rstrip()
+    raw_english_sentence=raw_english_sentence.lstrip()
+    result = raw_english_sentence
 
     return result
     # ==================================
+
+
 
 
 def decoding_character(morse_character):
@@ -170,11 +202,14 @@ def decoding_character(morse_character):
     # ===Modify codes below=============
     # 조건에 따라 변환되어야 할 결과를 result 변수에 할당 또는 필요에 따라 자유로운 수정
     morse_code_dict = get_morse_code_dict()
-    result = None
+    new_morse_code_dict={}
+    for k,v in morse_code_dict.items():
+        new_morse_code_dict[v]=k
+    if morse_character in new_morse_code_dict.keys():
+        result=new_morse_code_dict[morse_character]
 
     return result
     # ==================================
-
 
 def encoding_character(english_character):
     """
@@ -200,11 +235,11 @@ def encoding_character(english_character):
     # ===Modify codes below=============
     # 조건에 따라 변환되어야 할 결과를 result 변수에 할당 또는 필요에 따라 자유로운 수정
     morse_code_dict = get_morse_code_dict()
-    result = None
+    if english_character in morse_code_dict:
+        result=morse_code_dict[english_character]
 
     return result
     # ==================================
-
 
 def decoding_sentence(morse_sentence):
     """
@@ -225,7 +260,20 @@ def decoding_sentence(morse_sentence):
     """
     # ===Modify codes below=============
     # 조건에 따라 변환되어야 할 결과를 result 변수에 할당 또는 필요에 따라 자유로운 수정
-    result = None
+    morse_sentence=morse_sentence.rstrip()
+    morse_sentence=morse_sentence.lstrip()
+    morse_sentence_list=morse_sentence.split(" ")
+    sentence_list=[]
+    morse_code_dict = get_morse_code_dict()
+    new_morse_code_dict = {}
+    for k, v in morse_code_dict.items():
+        new_morse_code_dict[v] = k
+    for i in morse_sentence_list:
+        if i =="":
+            sentence_list.append(" ")
+        elif i in new_morse_code_dict:
+            sentence_list.append(new_morse_code_dict[i])
+    result = "".join(sentence_list)
 
     return result
     # ==================================
@@ -251,16 +299,45 @@ def encoding_sentence(english_sentence):
     """
     # ===Modify codes below=============
     # 조건에 따라 변환되어야 할 결과를 result 변수에 할당 또는 필요에 따라 자유로운 수정
-    result = None
+    raw_english_sentence=english_sentence
+    raw_english_sentence = raw_english_sentence.replace(".", "")
+    raw_english_sentence = raw_english_sentence.replace(",", "")
+    raw_english_sentence = raw_english_sentence.replace("!", "")
+    raw_english_sentence = raw_english_sentence.replace("?", "")
+    raw_english_sentence = raw_english_sentence.rstrip()
+    raw_english_sentence = raw_english_sentence.lstrip()
+    raw_english_sentence=raw_english_sentence.upper()
+    sentence_list = []
+    morse_code_dict = get_morse_code_dict()
+
+    for i in range(len(raw_english_sentence)):
+        if raw_english_sentence[i] == " " and sentence_list[-1]=="":
+            continue
+        elif raw_english_sentence[i]==" ":
+            sentence_list.append("")
+        elif raw_english_sentence[i] in morse_code_dict:
+            sentence_list.append(morse_code_dict[raw_english_sentence[i]])
+    result = " ".join(sentence_list)
 
     return result
     # ==================================
 
-
 def main():
     print("Morse Code Program!!")
     # ===Modify codes below=============
-
+    while True:
+        user_input=input("Input your message(H - Help, 0 - Exit) : ")
+        if user_input=="0":
+            break
+        elif is_help_command(user_input):
+            print(get_help_message())
+        elif not is_validated_english_sentence(user_input) and not is_validated_morse_code(user_input):
+            print("Wrong Input")
+            continue
+        elif is_validated_english_sentence(user_input):
+            print(encoding_sentence(user_input))
+        elif is_validated_morse_code(user_input):
+            print(decoding_sentence(user_input))
 
 
     # ==================================
