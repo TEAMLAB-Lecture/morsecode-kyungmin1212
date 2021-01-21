@@ -309,12 +309,8 @@ def encoding_sentence(english_sentence):
     raw_english_sentence=raw_english_sentence.upper()
     sentence_list = []
     morse_code_dict = get_morse_code_dict()
-    try:
-        sentence_list.append(raw_english_sentence[0])
-    except :
-        pass
 
-    for i in range(1,len(raw_english_sentence)):
+    for i in range(len(raw_english_sentence)):
         if raw_english_sentence[i] == " " and sentence_list[-1]=="":
             continue
         elif raw_english_sentence[i]==" ":
