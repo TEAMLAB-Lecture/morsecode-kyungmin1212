@@ -309,12 +309,18 @@ def encoding_sentence(english_sentence):
     raw_english_sentence=raw_english_sentence.upper()
     sentence_list = []
     morse_code_dict = get_morse_code_dict()
+    try:
+        sentence_list.append(raw_english_sentence[0])
+    except :
+        pass
 
-    for i in raw_english_sentence:
-        if i == " ":
+    for i in range(1,len(raw_english_sentence)):
+        if raw_english_sentence[i] == " " and sentence_list[-1]=="":
+            continue
+        elif raw_english_sentence[i]==" ":
             sentence_list.append("")
-        elif i in morse_code_dict:
-            sentence_list.append(morse_code_dict[i])
+        elif raw_english_sentence[i] in morse_code_dict:
+            sentence_list.append(morse_code_dict[raw_english_sentence[i]])
     result = " ".join(sentence_list)
 
     return result
@@ -327,6 +333,8 @@ def main():
         user_input=input("Input your message(H - Help, 0 - Exit) : ")
         if user_input=="0":
             break
+        elif is_help_command(user_input):
+            print(get_help_message())
         elif not is_validated_english_sentence(user_input) and not is_validated_morse_code(user_input):
             print("Wrong Input")
             continue
